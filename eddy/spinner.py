@@ -17,7 +17,8 @@ class Spinner(object):
         while 1: 
             for cursor in charset: yield msg+': '+cursor+' '
 
-    def __init__(self, msg='waiting', preset='classic', delay=None):
+    def __init__(self, msg='waiting', preset='classic', delay=None,
+                 iterable=None):
         super(Spinner, self).__init__()
 
         self.msg = msg
@@ -32,6 +33,8 @@ class Spinner(object):
         
         if delay is not None: 
             self.delay = delay
+        if iterable is not None:
+            self.iterable = iterable
 
         # determine number of delete chars from first item in iterable and
         # msg length

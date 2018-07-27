@@ -5,13 +5,18 @@ from . import spinner
 
 _spin = None
 
-def start(msg='waiting', name='classic'):
+def start(msg='waiting', name='classic', custom=None):
     """
     Start function for spinner.
     """
     global _spin
-    
-    _spin = spinner.Spinner(msg,name)
+
+    if custom is not None:
+        delay, iterable = custom
+        _spin = spinner.Spinner(msg=msg, iterable=iterable, delay=delay)
+    else:
+        _spin = spinner.Spinner(msg,name)
+
     _spin.start()
 
 def stop():
