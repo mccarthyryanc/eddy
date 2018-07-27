@@ -17,28 +17,21 @@ class Spinner(object):
         while 1: 
             for cursor in charset: yield msg+': '+cursor+' '
 
-    def __init__(self, msg='waiting', preset='classic', delay=None,
-                 iterable=None):
+    def __init__(self, msg='waiting', iterable='pulse-plus', delay=None):
         super(Spinner, self).__init__()
 
         self.msg = msg
         self.busy = False
 
-        if preset not in config.presets:
-            logger.warn(f'Unknown preset, {preset}, using "classic".')
-            preset = 'classic'
-        
-        self.iterable = config.presets[preset][1]
-        self.delay = config.presets[preset][0]
-        
+        if type(iterable) == str and iterable in config.presets:
+            self.iterable = config.presets[iterable][1]
+            self.delay = config.presets[iterable][0]
+        else:
+            self.iterable = iterable
+            self.delay = 0.1
+                
         if delay is not None: 
             self.delay = delay
-        if iterable is not None:
-            self.iterable = iterable
-
-        # determine number of delete chars from first item in iterable and
-        # msg length
-        self.delchar = 3 + len(msg) + len(self.iterable[0])
 
         # Define generator that advances through iterable
         self.spin_gen = self.spinning_cursor(self.msg, self.iterable)
@@ -48,7 +41,7 @@ class Spinner(object):
             sys.stdout.write(next(self.spin_gen))
             sys.stdout.flush()
             time.sleep(self.delay)
-            sys.stdout.write('\b'*self.delchar)
+            sys.stdout.write('\r')
             sys.stdout.flush()
 
     def start(self):
